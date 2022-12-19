@@ -1,0 +1,99 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Models
+model User {
+  // PK
+  id Int @id @default(autoincrement())
+
+  // Attributes
+  firstName String? @db.VarChar(50)
+  lastName String?  @db.VarChar(50)
+  email String @unique @db.VarChar(70)
+  password String
+
+  // Metadata
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  todoListUsers TodoListUser[]
+  todoListItems TodoListItem[]
+
+  // Name of the table in the database
+  @@map("users")
+}
+
+model TodoList {
+  // PK
+  id Int @id @default(autoincrement())
+
+  // Attributes
+  name String @db.VarChar(100)
+
+  // Metadata
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  users TodoListUser[]
+  todoListItems TodoListItem[]
+
+  // Name of the table in the database
+  @@map("todo_lists")
+}
+
+model TodoListUser {
+  // FK and Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int
+  todoList TodoList @relation(fields: [todoListId], references: [id], onDelete: Cascade)
+  todoListId Int
+
+  // Metadata
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Composite PK
+  @@id([userId, todoListId])
+
+  // Name of the table in the database
+  @@map("todo_list_users")
+}
+
+model TodoListItem {
+  // PK
+  id Int @id @default(autoincrement())
+
+  // FK and Relations
+  todoList TodoList @relation(fields: [todoListId], references: [id], onDelete: Cascade)
+  todoListId Int
+  user User @relation(fields: [userId], references: [id])
+  userId Int
+
+  // Attributes
+  title String @db.VarChar(100)
+  description String
+  deadline DateTime
+  state TodoListItemState @default(ACTIVE)
+
+  // Metadata
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Name of the table in the database
+  @@map("todo_list_items")
+}
+
+// Enums
+enum TodoListItemState {
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}

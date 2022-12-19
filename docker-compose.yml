@@ -1,0 +1,26 @@
+version: '3.8'
+services:
+  dev-db:
+    image: postgres:15
+    ports:
+      - 15432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: project-todo
+    networks:
+      - project
+
+  test-db:
+    image: postgres:15
+    ports:
+      - 25432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: project-todo
+    networks:
+      - project
+
+networks:
+  project:
