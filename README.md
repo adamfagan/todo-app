@@ -41,3 +41,5 @@ $ yarn test:e2e:watch
 ```
 
 ## Database design
+
+![alt text](https://github.com/adamfagan/todo-app/blob/main/database-design.png?raw=true)
